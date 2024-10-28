@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NISB: Neuron Instance Segmentation Benchmark</title>
-    <meta name="google-site-verification" content="kARkPqqBuP8yiK-vzyg7-2H-Xwpsxcoz-jVDaBps8vo" />
-    <meta name="msvalidate.01" content="7670DABC31EC388FE9A10CD923C4313A" />
+    <link rel="icon" type="image/x-icon" href="favicon.png">
+    <meta name="google-site-verification" content="kARkPqqBuP8yiK-vzyg7-2H-Xwpsxcoz-jVDaBps8vo"/>
+    <meta name="msvalidate.01" content="7670DABC31EC388FE9A10CD923C4313A"/>
     <style>
         :root {
             --primary: #2563eb;
@@ -373,26 +374,26 @@
     <div class="content">
         <h2>Background</h2>
         <p>Neuron instance segmentation is an essential step in connectomics, the reconstruction of brain wiring diagrams at synapse-level resolution. Manual correction of automated segmentations is expensive: with currently available methods, it is estimated to
-            <a href="https://cms.wellcome.org/sites/default/files/2023-06/Connectomics-scaling-up-connectomics.pdf" target="_blank">cost billions of dollars</a> to proofread the connectome of a single mouse brain, so automated methods need to minimize errors. However, progress is difficult to measure due to a lack of established large-scale benchmark datasets, potentially
+            <a href="https://cms.wellcome.org/sites/default/files/2023-06/Connectomics-scaling-up-connectomics.pdf" target="_blank">cost billions of dollars</a> to proofread the connectome of a single mouse brain, so automated methods need to improve. However, progress is difficult to measure due to a lack of established large-scale benchmark datasets, potentially
             <strong>slowing the development of better methods</strong>.</p>
         <p>Existing benchmarks are limited:</p>
         <ol>
             <li><strong>Size Constraints:</strong> Benchmarks like <a href="https://cremi.org/"
                                                                       target="_blank">CREMI</a> or <a
-                    href="https://snemi3d.grand-challenge.org/" target="_blank">SNEMI3D</a> are saturated since they only provide small volumes, making it difficult to reliably estimate false merge rates for modern methods that achieve low error rates.
+                    href="https://snemi3d.grand-challenge.org/" target="_blank">SNEMI3D</a> are saturated since they only provide small image volumes, making it difficult to reliably estimate false merge rates for modern methods that achieve low error rates.
             </li>
             <li>
                 <strong>Resource Intensity:</strong> Larger datasets, such as the songbird volume ("<a href="https://syconn.esc.mpcdf.mpg.de/" target="_blank">j0126</a>") used to
                 evaluate advanced methods like <a href="https://www.nature.com/articles/s41592-018-0049-4"
                                                   target="_blank">FFN</a> and <a
-                    href="https://www.nature.com/articles/s41592-022-01711-z" target="_blank">LSD</a>, require significant computational and development resources to segment, limiting accessibility for smaller (computationally constrained) research groups.
+                    href="https://www.nature.com/articles/s41592-022-01711-z" target="_blank">LSD</a>, require significant computational and development resources to segment, limiting accessibility for computationally constrained research groups.
             </li>
             <li>
-                <strong>Limited Ground Truth:</strong> These large datasets still have limited ground truth for training (dense cubes) and evaluation (skeletons), covering only a small subset of the data because high-quality manual annotation is expensive. Additionally, human-generated ground truth is never perfect and suffers from label noise.
+                <strong>Limited Ground Truth:</strong> These large datasets still have limited ground truth for training (dense cubes) and evaluation (skeletons), covering only a small subset of the data because high-quality manual annotation is expensive. Additionally, human-generated ground truth suffers from label noise.
             </li>
         </ol>
         <h2>Synthetic Benchmark</h2>
-        <p>We remedy this by providing the first large-scale synthetic benchmark datasets for neuron instance segmentation. We generate the data by first using procedural generation to create segmentations (random walks with branches for the "neurons" + some post-processing), and then using novel 3D diffusion models conditioned on the segmentation to generate the corresponding images. Since the segmentations are generated before the images, we bypass the limitations of human ground truth generation. The synthetic data generation is cost-effective (&lt;200 USD per 27µm-cube with 9×9×20 nm voxels using rented GPUs).</p>
+        <p>We remedy this by providing the first large-scale synthetic benchmark datasets for neuron instance segmentation. We generate the data by first using procedural generation to create segmentations (random walks with branches for the "neurons" + some post-processing), and then using novel 3D diffusion models conditioned on the segmentation to generate realistic corresponding images. Since the segmentations are generated before the images, our datasets come with noise-free labels, in contrast to error-prone human annotations. The synthetic data generation is cost-effective (&lt;200 USD per 27µm-cube with 9×9×20 nm voxels using rented GPUs).</p>
 
         <h2>Advantages</h2>
         <ol>
@@ -419,7 +420,7 @@
   title={NISB: Neuron Instance Segmentation Benchmark},
   author={Franz Rieger and Ana-Maria Lăcătușu and Zuzana Urbanová and Andrei Mancu and Hashir Ahmad and Martin Bucella and Joergen Kornfeld},
   year={2024},
-  doi={TODO},
+  doi={10.17617/1.r2mm-1h33}
 }</code></pre>
         <p> This work is licensed under a
             <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0 license</a>.</p>
@@ -468,11 +469,11 @@
                 <img src="neg_guidance_combined.jpg" alt="Image: Negative Guidance" style="width: 95%; margin: 0 auto 20px; display: block;">
             </div>
             <div class="dataset-item">
-                <h3>6. Thick+No Touching</h3>
+                <h3>6. Thick+Not Touching</h3>
                 <p>An easier setting where the processes are always thick and don't touch (dataset ID:
                     <code>no_touch_thick</code>).
                 </p>
-                <img src="no_touch_thick_combined.jpg" alt="Image: Thick+No Touching" style="width: 95%; margin: 0 auto 20px; display: block;">
+                <img src="no_touch_thick_combined.jpg" alt="Image: Thick+Not Touching" style="width: 95%; margin: 0 auto 20px; display: block;">
             </div>
             <div class="dataset-item">
                 <h3>7. Thin+Touching</h3>
@@ -658,7 +659,7 @@ skels = pickle.load(open('/local/benchmark/dir/base/train/seed0/skeleton.pkl', '
             </tr>
 
         </table>
-        <h4>Thick+No Touching</h4>
+        <h4>Thick+Not Touching</h4>
         <table>
             <tr>
                 <th>Method</th>

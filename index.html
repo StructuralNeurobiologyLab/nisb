@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NISB: Neuron Instance Segmentation Benchmark</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-center {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 3rem;
+        }
+
+        .title-group {
+            flex-shrink: 0;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .navbar p {
+            margin: 0;
+            color: var(--text-light);
+            font-size: 1.0rem;
+        }
+
+        .tab-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            height: 100%;
+        }
+
+        .tab-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 0.5rem 0;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .tab-links a:hover {
+            color: var(--primary);
+        }
+
+        .tab-links a.active {
+            color: var(--primary);
+        }
+
+        .tab-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .background-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+        }
+
+        .background1, .background2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .background1 {
+            background-image: url('background_img.jpg');
+            opacity: 1;
+        }
+
+        .background2 {
+            background-image: url('background_seg_cropped.png');
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .content-wrapper {
+            display: none;
+            margin-top: 120px;
+            padding: 2rem;
+        }
+
+        .content-wrapper.active {
+            display: block;
+        }
+
+        .content {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        h3 {
+            color: var(--text);
+            font-size: 1.5rem;
+        }
+
+        h4 {
+            color: var(--text);
+            font-size: 1.3rem;
+        }
+
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        a:hover {
+            color: var(--text);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        color: var(--text);
+        }
+
+    th {
+        background: #f1f5f9;
+        color: var(--text);
+        font-weight: 600;
+        padding: 0.75rem;
+        text-align: center;
+    }
+
+    td {
+            padding: 0.75rem;
+        text-align: center;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    tr:nth-child(even) td {
+        background: #f9fafb;
+        }
+
+
+    td {
+        position: relative;
+        text-align: center;
+    }
+
+    td:before {
+        content: "";
+        display: inline-block;
+        width: 1em;
+    }
+
+    /* Center alignment on plus-minus sign */
+    td[data-pm] {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        white-space: nowrap;
+    }
+
+    td[data-pm]::before {
+        content: "";
+        margin-left: 0.25rem;
+    }
+
+    td[data-pm] span {
+        padding-right: 0.25rem;
+        text-align: right;
+    }
+
+    td[data-pm] span:last-child {
+        padding-left: 0.25rem;
+        text-align: left;
+    }
+
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+
+        code {
+            font-family: 'SF Mono', Consolas, Monaco, 'Andale Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .next-tab {
+            margin-top: 2rem;
+            text-align: right;
+        }
+
+        .next-tab a {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .next-tab a:hover {
+            background: var(--text);
+        }
+
+        ol, ul {
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        .dataset-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+
+        .dataset-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+        }
+
+        .dataset-item img {
+            margin: auto auto 0;
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .navbar-center {
+                gap: 2rem;
+            }
+
+            .tab-links {
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 1rem;
+            }
+
+            .navbar-center {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .tab-links {
+                width: 100%;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .content-wrapper {
+                margin-top: 220px;
+                padding: 1rem;
+            }
+
+            .content {
+                padding: 1.5rem;
+            }
+            .dataset-grid {
+                grid-template-columns: 1fr;
+             }
+        }
+
+        @media (max-width: 480px) {
+            .navbar h1 {
+                font-size: 1.5rem;
+            }
+
+            .navbar p {
+                font-size: 0.8rem;
+            }
+
+            .content-wrapper {
+                margin-top: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="navbar-center">
+        <h1>NISB: Neuron Instance Segmentation Benchmark</h1>
+        <p>A large yet accessible synthetic benchmark to facilitate measurable progress in neuron instance
+            segmentation</p>
+        <div class="tab-links">
+            <a href="#" onclick="showTab('tab1')">Overview</a>
+            <a href="#" onclick="showTab('tab2')">Data</a>
+            <a href="#" onclick="showTab('tab3')">Leaderboard</a>
+        </div>
+    </div>
+</nav>
+
+<div class="background-wrapper">
+    <div class="background1"></div>
+    <div class="background2"></div>
+</div>
+
+<div id="tab1" class="content-wrapper active">
+    <div class="content">
+        <h2>Background</h2>
+        <p>Neuron instance segmentation is an essential step in connectomics, the reconstruction of brain wiring diagrams at synapse-level resolution. Manual correction of automated segmentations is expensive: with currently available methods, it is estimated to
+            <a href="https://cms.wellcome.org/sites/default/files/2023-06/Connectomics-scaling-up-connectomics.pdf" target="_blank">cost billions of dollars</a> to proofread the connectome of a single mouse brain, so automated methods need to minimize errors. However, progress is difficult to measure due to a lack of established large-scale benchmark datasets, potentially
+            <strong>slowing the development of better methods</strong>.</p>
+        <p>Existing benchmarks are limited:</p>
+        <ol>
+            <li><strong>Size Constraints:</strong> Benchmarks like <a href="https://cremi.org/"
+                                                                      target="_blank">CREMI</a> or <a
+                    href="https://snemi3d.grand-challenge.org/" target="_blank">SNEMI3D</a> are saturated since they only provide small volumes, making it difficult to reliably estimate false merge rates for modern methods that achieve low error rates.
+            </li>
+            <li>
+                <strong>Resource Intensity:</strong> Larger datasets, such as the songbird volume ("<a href="https://syconn.esc.mpcdf.mpg.de/" target="_blank">j0126</a>") used to
+                evaluate advanced methods like <a href="https://www.nature.com/articles/s41592-018-0049-4"
+                                                  target="_blank">FFN</a> and <a
+                    href="https://www.nature.com/articles/s41592-022-01711-z" target="_blank">LSD</a>, require significant computational and development resources to segment, limiting accessibility for smaller (computationally constrained) research groups.
+            </li>
+            <li>
+                <strong>Limited Ground Truth:</strong> These large datasets still have limited ground truth for training (dense cubes) and evaluation (skeletons), covering only a small subset of the data because high-quality manual annotation is expensive. Additionally, human-generated ground truth is never perfect and suffers from label noise.
+            </li>
+        </ol>
+        <h2>Synthetic Benchmark</h2>
+        <p>We remedy this by providing the first large-scale synthetic benchmark datasets for neuron instance segmentation. We generate the data by first using procedural generation to create segmentations (random walks with branches for the "neurons" + some post-processing), and then using novel 3D diffusion models conditioned on the segmentation to generate the corresponding images. Since the segmentations are generated before the images, we bypass the limitations of human ground truth generation. The synthetic data generation is cost-effective (&lt;200 USD per 27µm-cube with 9×9×20 nm voxels using rented GPUs).</p>
+
+        <h2>Advantages</h2>
+        <ol>
+            <li>
+                <strong>Expanded Training Data:</strong> We essentially eliminate training data limitations for our benchmark, providing more than 100x the voxel-wise segmentation ground truth used in
+                <a href="https://www.biorxiv.org/content/10.1101/2021.05.29.446289v4" target="_blank">recent trainings</a> in a single dataset. This allows for fair model comparison in a largely data-unconstrained training setting.
+            </li>
+            <li>
+                <strong>Extensive Evaluation:</strong> Our test cubes are large enough to provide ~100mm path length each, enabling meaningful comparisons.
+            </li>
+            <li>
+                <strong>Computational Accessibility:</strong> Yet, the cubes are small enough to be processed with reasonable resources (~2 hours on 1 GPU for our baseline) without requiring complex distributed inference setups.
+            </li>
+        </ol>
+        <h2>Team</h2>
+        <p>
+            <a href="mailto:franz.rieger@bi.mpg.de">Franz Rieger</a>, Ana-Maria Lăcătușu, Zuzana Urbanová, Andrei Mancu, Hashir Ahmad, Martin Bucella, and
+            <a href="mailto:joergen.kornfeld@bi.mpg.de">Joergen Kornfeld</a> @ Max Planck Institute for Biological Intelligence. Data generously hosted by the
+            <a href="https://www.mpcdf.mpg.de/" target="_blank">Max Planck Computing and Data Facility</a>. We are grateful to Alexandra Rother and Jonas Hemesath for their help with rendering.
+        </p>
+
+        <p>Details on data generation and diffusion models will be published soon. Until then, please use the following BibTeX to cite this benchmark:</p>
+        <pre><code>@misc{nisb,
+  title={NISB: Neuron Instance Segmentation Benchmark},
+  author={Franz Rieger and Ana-Maria Lăcătușu and Zuzana Urbanová and Andrei Mancu and Hashir Ahmad and Martin Bucella and Joergen Kornfeld},
+  year={2024},
+  doi={TODO},
+}</code></pre>
+        <p> This work is licensed under a
+            <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0 license</a>.</p>
+        <div class="next-tab">
+            <a href="#" onclick="showTab('tab2')">Next: Data</a>
+        </div>
+    </div>
+</div>
+
+<div id="tab2" class="content-wrapper">
+    <div class="content">
+        <h2>Benchmark Datasets</h2>
+        <p>The benchmark currently comprises 9 settings/datasets: each generally with 5 cubes for training, one for validation, and one for testing. Each image cube comes with a dense segmentation used to create the images and skeletons. The cubes all have a side length of 27µm, generally with a voxel-size of 9×9×20 nm and 3000×3000×1350 voxels.</p>
+        <div class="dataset-grid">
+            <div class="dataset-item">
+                <h3>1. Base</h3>
+                <p>Our
+                    <a href="https://neuroglancer-demo.appspot.com/#!%7B%22dimensions%22:%7B%22x%22:%5B9e-9%2C%22m%22%5D%2C%22y%22:%5B9e-9%2C%22m%22%5D%2C%22z%22:%5B2e-8%2C%22m%22%5D%7D%2C%22position%22:%5B1639.26171875%2C1369.36328125%2C675.5%5D%2C%22crossSectionScale%22:1%2C%22projectionScale%22:4096%2C%22layers%22:%5B%7B%22type%22:%22image%22%2C%22source%22:%22precomputed://https://syconn.esc.mpcdf.mpg.de/synem/val/em_mixed/image%22%2C%22tab%22:%22source%22%2C%22name%22:%22image%22%7D%2C%7B%22type%22:%22segmentation%22%2C%22source%22:%22precomputed://https://syconn.esc.mpcdf.mpg.de/synem/val/em_mixed/seg%22%2C%22tab%22:%22source%22%2C%22segments%22:%5B%5D%2C%22name%22:%22seg%22%7D%5D%2C%22selectedLayer%22:%7B%22visible%22:true%2C%22layer%22:%22seg%22%7D%2C%22layout%22:%224panel%22%7D">base</a> setting from which all others are derived. It is based on zebra finch EM data ("j0126") and has mixed thick/thin processes (radius between one and tens of voxels) that occasionally touch. Each cube has ~400 "neurons" and ~100mm path length (dataset ID:
+                    <code>base</code>).
+                </p>
+                <img src="base_compressed.png" alt="Image: Base Setting" style="width: 95%; margin-bottom: 20px;">
+            </div>
+            <div class="dataset-item">
+                <h3>2. 100 Training Cubes</h3>
+                <p>More training data to investigate scaling laws (or if some/all methods are data saturated) (dataset ID:
+                    <code>train_100</code>).
+                </p>
+                <img src="train_100_combined.jpg" alt="Image: 100 Training Cubes" style="width: 95%; margin: 0 auto 20px; display: block;">
+            </div>
+            <div class="dataset-item">
+                <h3>3. Slice Perturbations</h3>
+                <p>A harder setting with slices swapped/dropped/elastically deformed/shifted (dataset ID:
+                    <code>slice_perturbed</code>).
+                </p>
+                <img src="slice_perturbed_combined.jpg" alt="Image: Slice Perturbations" style="width: 95%; aspect-ratio: 1/1; margin: 0 auto 20px; display: block;">
+            </div>
+            <div class="dataset-item">
+                <h3>4. Positive Guidance</h3>
+                <p>An easier setting with very clear membranes (dataset ID: <code>pos_guidance</code>).</p>
+                <img src="pos_guidance_combined.jpg" alt="Image: Positive Guidance" style="width: 95%; margin: 0 auto 20px; display: block;">
+            </div>
+            <div class="dataset-item">
+                <h3>5. Negative Guidance</h3>
+                <p>A harder setting with membranes that are often not visible (dataset ID: <code>neg_guidance</code>).
+                </p>
+                <img src="neg_guidance_combined.jpg" alt="Image: Negative Guidance" style="width: 95%; margin: 0 auto 20px; display: block;">
+            </div>
+            <div class="dataset-item">
+                <h3>6. Thick+No Touching</h3>
+                <p>An easier setting where the processes are always thick and don't touch (dataset ID:
+                    <code>no_touch_thick</code>).
+                </p>
+                <img src="no_touch_thick_combined.jpg" alt="Image: Thick+No Touching" style="width: 95%; margin: 0 auto 20px; display: block;">
+            </div>
+            <div class="dataset-item">
+                <h3>7. Thin+Touching</h3>
+                <p>A harder setting where the processes are both thinner and touching (dataset ID:
+                    <code>touching_thin</code>).</p>
+                <img src="touching_thin_combined.jpg" alt="Image: Thin+Touching" style="width: 95%; margin: 0 auto 20px; display: block;">
+            </div>
+            <div class="dataset-item">
+                <h3>8. LICONN</h3>
+                <p>Using
+                    <a href="https://www.biorxiv.org/content/10.1101/2024.03.01.582884v2" target="_blank">LICONN</a>
+                    instead of EM for the diffusion models (and a different voxel-size of 9×9×12 nm, resulting in 3000×3000×2250 voxel cubes). An eroded version of the
+                    <code>base</code> segmentation is used to better match the real LICONN segmentation style (dataset ID:
+                    <code>liconn</code>).
+                </p>
+                <img src="liconn_combined.jpg" alt="Image: LICONN" style="width: 95%; margin: 0 auto 20px; display: block;">
+            </div>
+            <div class="dataset-item">
+                <h3>9. Multichannel</h3>
+                <p>Inspired by
+                    <a href="https://e11.bio/" target="_blank">upcoming multiplexing approaches</a>, using 8 channel embeddings per neuron + heavy noise (no diffusion model because no dense dataset available yet). By design, manual segmentation of the data is impossible without further processing such as blurring (dataset ID:
+                    <code>multichannel</code>).
+                </p>
+                <img src="multichannel_combined.jpg" alt="Image: Multichannel" style="width: 95%; margin: 0 auto 20px; display: block;">
+            </div>
+        </div>
+        <h2>Addressing Synthetic vs. Real Data Concerns</h2>
+        <p>While there will always be some domain shift between synthetic and real data, we compensate for this by covering a wide range of settings (different datasets). If a segmentation approach performs best on all of them, one may reasonably expect it to perform well on future real data.</p>
+        <p>Limitations regarding the synthetic segmentation include fairly spherical somata and branches that are not separated into axons and dendrites. However, generating realistic synthetic neuron segmentations on a large context is an unsolved problem. One of the closest current approaches is
+            <a href="https://arxiv.org/abs/2401.09500" target="_blank">MorphGrower</a>, but it only generates a single skeleton at a time, not a whole volume of intermingled neurons, as seen in real brain tissue.
+        </p>
+
+        <h2>Data Access</h2>
+
+        <pre><code># Download all datasets (~3 TB) with aws (pip install awscli)
+aws s3 sync --endpoint-url https://s3.nexus.mpcdf.mpg.de:443 --no-sign-request s3://nisb /local/benchmark/dir/
+
+# Individual dataset (e.g. "base")
+aws s3 sync --endpoint-url https://s3.nexus.mpcdf.mpg.de:443 --no-sign-request s3://nisb/base/ /local/benchmark/dir/base/</code></pre>
+
+        <p>Dataset structure:</p>
+        <pre><code>/local/benchmark/dir/{dataset_ID}/{split}/seed{i}/</code></pre>
+
+        <ul>
+            <li><code>dataset_ID</code>: dataset name (e.g. <code>base</code>, <code>train_100</code>, ...)</li>
+            <li><code>split</code>: <code>{train,val,test}</code></li>
+            <li><code>i</code>: cube index</li>
+        </ul>
+
+        <p>Loading data:</p>
+        <pre><code>data = zarr.open('/local/benchmark/dir/base/train/seed0/data.zarr/', mode='r')
+print(data['img'].shape, data['seg'].shape)  # x, y, z, (channel)
+
+skels = pickle.load(open('/local/benchmark/dir/base/train/seed0/skeleton.pkl', 'rb'))  # for evaluation</code></pre>
+
+        <div class="next-tab">
+            <a href="#" onclick="showTab('tab3')">Next: Leaderboard</a>
+        </div>
+    </div>
+</div>
+
+<div id="tab3" class="content-wrapper">
+    <div class="content">
+        <h2>Leaderboard</h2>
+        <p>Our goal is to determine which segmentation pipeline, public or proprietary, performs best in each setting. Initially, we only share the results of
+            <a href="https://github.com/StructuralNeurobiologyLab/banis" target="_blank">our baseline BANIS</a>. To participate in the leaderboard with your segmentation pipeline, please contact
+            <a href="mailto:franz.rieger@bi.mpg.de">Franz Rieger</a> and
+            <a href="mailto:joergen.kornfeld@bi.mpg.de">Joergen Kornfeld</a> (in CC).</p>
+
+        <h3>Rules for Participation</h3>
+        <ol>
+            <li>Methods should
+                <strong>only</strong> be trained on the training cubes of the respective setting. The validation and test cubes must not be used for training. Methods utilizing additional data (e.g. pretrained models, other public/private datasets, or other synthetic datasets) will be clearly marked.
+            </li>
+            <li>Results must be reported on the test cube using the provided ground truth skeletons and
+                <a href="https://github.com/StructuralNeurobiologyLab/banis?tab=readme-ov-file#evaluation" target="_blank">evaluation
+                    code</a> (please send us the printed output). The evaluation metrics are:
+                <ul>
+                    <li>Normalized Expected Run Length (NERL)</li>
+                    <li>Variation of Information (VOI)</li>
+                    <li>Number of split and merge errors per µm³</li>
+                </ul>
+                Top submissions may be asked to provide their predicted segmentation for verification.
+            </li>
+            <li> Hyperparameters, including post-processing thresholds, should be chosen based on the validation cube - not the test cube.
+            </li>
+            <li>No manual post-processing (e.g. fixing merge or split errors based on visual inspection of the test cube) is allowed. We want to assess the quality of fully-automated segmentation. (Automated post-processing such as splitting instances with more than one soma is allowed.)
+            </li>
+            <li>Where feasible, teams are encouraged to report the mean and standard deviation of five independent training runs.
+            </li>
+            <li>The submission deadline is <strong> December 31, 2024</strong>.</li>
+            <li>Teams may submit multiple methods (e.g. smaller/larger models or versions tuned for different metrics).</li>
+        </ol>
+
+        <h3>Leaderboard Tables</h3>
+
+        <h4>Base</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>24.4±1.1</td>
+                <td>3.46±0.04</td>
+                <td>0.174±0.016</td>
+                <td>0.037±0.001</td>
+            </tr>
+        </table>
+
+        <h4>100 Training Cubes</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>24.0±1.3</td>
+                <td>3.48±0.07</td>
+                <td>0.173±0.014</td>
+                <td>0.037±0.001</td>
+            </tr>
+        </table>
+        <h4>Slice Perturbations</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>21.3±0.9</td>
+                <td>3.85±0.05</td>
+                <td>0.179±0.006</td>
+                <td>0.039±0.001</td>
+            </tr>
+
+        </table>
+        <h4>Positive Guidance</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>33.7±7.3</td>
+                <td>2.47±0.26</td>
+                <td>0.239±0.085</td>
+                <td>0.035±0.006</td>
+            </tr>
+
+        </table>
+        <h4>Negative Guidance</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>1.5±0.1</td>
+                <td>6.92±0.04</td>
+                <td>0.229±0.010</td>
+                <td>0.134±0.003</td>
+            </tr>
+
+        </table>
+        <h4>Thick+No Touching</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>95.4±0.6</td>
+                <td>0.17±0.03</td>
+                <td>0.003±0.001</td>
+                <td>0.023±0.000</td>
+            </tr>
+
+        </table>
+
+        <h4>Thin+Touching</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>1.2±0.1</td>
+                <td>7.37±0.02</td>
+                <td>1.371±0.041</td>
+                <td>0.144±0.004</td>
+            </tr>
+
+        </table>
+
+
+        <h4>LICONN</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>6.3±0.3</td>
+                <td>6.45±0.06</td>
+                <td>0.182±0.013</td>
+                <td>0.041±0.001</td>
+            </tr>
+        </table>
+
+        <h4>Multichannel</h4>
+        <table>
+            <tr>
+                <th>Method</th>
+                <th>NERL (%) ↑</th>
+                <th>VOI ↓</th>
+                <th># splits / µm³ ↓</th>
+                <th># mergers / µm³ ↓</th>
+            </tr>
+            <tr>
+                <td>BANIS-S</td>
+                <td>26.9±4.4</td>
+                <td>3.57±0.49</td>
+                <td>0.283±0.041</td>
+                <td>0.037±0.008</td>
+            </tr>
+
+        </table>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('scroll', function() {
+        const background2 = document.querySelector('.background2');
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPosition = window.scrollY;
+        const opacityValue = Math.min(scrollPosition / scrollHeight, 1);
+        background2.style.opacity = opacityValue;
+    });
+
+    function showTab(tabId) {
+    // Remove active class from all tabs
+    const tabLinks = document.querySelectorAll('.tab-links a');
+    tabLinks.forEach(link => {
+        link.classList.remove('active');
+    });
+
+    // Add active class to clicked tab
+    const clickedTab = document.querySelector(`.tab-links a[onclick*="${tabId}"]`);
+    clickedTab.classList.add('active');
+
+    // Show content
+        const tabs = document.querySelectorAll('.content-wrapper');
+        tabs.forEach(tab => {
+            tab.classList.remove('active');
+            tab.style.display = 'none';
+        });
+        const activeTab = document.getElementById(tabId);
+        activeTab.classList.add('active');
+        activeTab.style.display = 'block';
+    }
+    // Set initial active tab
+    document.addEventListener('DOMContentLoaded', function() {
+    const firstTab = document.querySelector('.tab-links a');
+    firstTab.classList.add('active');
+    });
+
+    function handleImageScroll() {
+        const scrollPosition = window.scrollY;
+        const windowHeight = window.innerHeight;
+        const imageContainers = document.querySelectorAll('.image-scroll-container');
+
+        imageContainers.forEach(container => {
+            const containerRect = container.getBoundingClientRect();
+            const containerTop = containerRect.top + scrollPosition;
+            const containerBottom = containerRect.bottom + scrollPosition;
+            const containerHeight = containerRect.height;
+
+            if (scrollPosition + windowHeight > containerTop && scrollPosition < containerBottom) {
+                const scrollPercentage = (scrollPosition + windowHeight - containerTop) / (containerHeight + windowHeight);
+                const images = container.querySelectorAll('.image-scroll');
+                const imageCount = images.length;
+
+                images.forEach((img, index) => {
+                    const startOpacity = index / imageCount;
+                    const endOpacity = (index + 1) / imageCount;
+                    let opacity = 0;
+
+                    if (scrollPercentage >= startOpacity && scrollPercentage <= endOpacity) {
+                        opacity = (scrollPercentage - startOpacity) / (endOpacity - startOpacity);
+                    } else if (scrollPercentage > endOpacity) {
+                        opacity = 1;
+                    }
+
+                    img.style.opacity = opacity;
+                });
+            }
+        });
+    }
+
+    window.addEventListener('scroll', handleImageScroll);
+    window.addEventListener('resize', handleImageScroll);
+    window.addEventListener('load', handleImageScroll);
+</script>
+</body>
+</html>

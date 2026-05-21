@@ -1,0 +1,38 @@
+{
+  "dimensions": {
+    "x": [
+      9e-09,
+      "m"
+    ],
+    "y": [
+      9e-09,
+      "m"
+    ],
+    "z": [
+      2e-08,
+      "m"
+    ]
+  },
+  "layers": [
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://syconn.esc.mpcdf.mpg.de/synem/val/em_mixed/image"
+        }
+      ],
+      "name": "image"
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://syconn.esc.mpcdf.mpg.de/synem/val/em_mixed/seg"
+        }
+      ],
+      "name": "seg",
+      "visible": false
+    }
+  ],
+  "layout": "xy"
+}

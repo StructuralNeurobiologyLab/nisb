@@ -18,7 +18,7 @@
       "type": "image",
       "source": [
         {
-          "url": "precomputed://https://syconn.esc.mpcdf.mpg.de/synem/val/multichannel/image"
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/multichannel/image"
         }
       ],
       "name": "image"
@@ -27,12 +27,16 @@
       "type": "segmentation",
       "source": [
         {
-          "url": "precomputed://https://syconn.esc.mpcdf.mpg.de/synem/val/multichannel/seg"
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/multichannel/seg"
         }
       ],
-      "name": "seg",
-      "visible": false
+      "name": "seg"
     }
   ],
-  "layout": "xy"
+  "layout": "xy",
+  "position": [
+    1500,
+    1500,
+    675
+  ]
 }

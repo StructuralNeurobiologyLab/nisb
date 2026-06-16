@@ -21,7 +21,7 @@
           "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed/image"
         }
       ],
-      "name": "image"
+      "name": "base image"
     },
     {
       "type": "segmentation",
@@ -30,7 +30,167 @@
           "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed/seg"
         }
       ],
-      "name": "seg"
+      "name": "base seg"
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed_100_train/image"
+        }
+      ],
+      "name": "NISB100 image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed_100_train/seg"
+        }
+      ],
+      "name": "NISB100 seg",
+      "visible": false
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/pos_guidance/image"
+        }
+      ],
+      "name": "pos_guidance image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/pos_guidance/seg"
+        }
+      ],
+      "name": "pos_guidance seg",
+      "visible": false
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/neg_guidance/image"
+        }
+      ],
+      "name": "neg_guidance image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/neg_guidance/seg"
+        }
+      ],
+      "name": "neg_guidance seg",
+      "visible": false
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed_slice_perturbed/image"
+        }
+      ],
+      "name": "slice_perturbed image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed_slice_perturbed/seg"
+        }
+      ],
+      "name": "slice_perturbed seg",
+      "visible": false
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_thick_no_touch/image"
+        }
+      ],
+      "name": "thick_no_touch image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_thick_no_touch/seg"
+        }
+      ],
+      "name": "thick_no_touch seg",
+      "visible": false
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_thin_touching/image"
+        }
+      ],
+      "name": "thin_touching image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_thin_touching/seg"
+        }
+      ],
+      "name": "thin_touching seg",
+      "visible": false
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/liconn_mixed/image"
+        }
+      ],
+      "name": "liconn image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/liconn_mixed/seg"
+        }
+      ],
+      "name": "liconn seg",
+      "visible": false
+    },
+    {
+      "type": "image",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/multichannel/image"
+        }
+      ],
+      "name": "multichannel image",
+      "visible": false
+    },
+    {
+      "type": "segmentation",
+      "source": [
+        {
+          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/multichannel/seg"
+        }
+      ],
+      "name": "multichannel seg",
+      "visible": false
     }
   ],
   "layout": "4panel",

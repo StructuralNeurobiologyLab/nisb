@@ -33,10 +33,12 @@
       "name": "seg"
     }
   ],
-  "layout": "xy",
+  "layout": "4panel",
   "position": [
     1500,
     1500,
     675
-  ]
+  ],
+  "crossSectionScale": 2.5,
+  "projectionScale": 3200
 }

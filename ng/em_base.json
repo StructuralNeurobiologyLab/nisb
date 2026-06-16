@@ -36,26 +36,6 @@
       "type": "image",
       "source": [
         {
-          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed_100_train/image"
-        }
-      ],
-      "name": "NISB100 image",
-      "visible": false
-    },
-    {
-      "type": "segmentation",
-      "source": [
-        {
-          "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/em_mixed_100_train/seg"
-        }
-      ],
-      "name": "NISB100 seg",
-      "visible": false
-    },
-    {
-      "type": "image",
-      "source": [
-        {
           "url": "precomputed://https://s3.nexus.mpcdf.mpg.de/nisb-ng/ng/pos_guidance/image"
         }
       ],

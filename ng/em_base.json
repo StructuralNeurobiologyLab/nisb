@@ -199,6 +199,6 @@
     1500,
     675
   ],
-  "crossSectionScale": 2.5,
-  "projectionScale": 3200
+  "crossSectionScale": 0.25,
+  "projectionScale": 320.0
 }

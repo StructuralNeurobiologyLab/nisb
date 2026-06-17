@@ -180,5 +180,11 @@
     675
   ],
   "crossSectionScale": 0.25,
-  "projectionScale": 320.0
+  "projectionScale": 320.0,
+  "projectionOrientation": [
+    0.27,
+    0.2,
+    0.0,
+    0.94
+  ]
 }
